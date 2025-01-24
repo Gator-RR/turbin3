@@ -1,2 +1,5 @@
 /turbindev-keypair.json
 *wallet.json
+.gitignore
+*ignore
+
