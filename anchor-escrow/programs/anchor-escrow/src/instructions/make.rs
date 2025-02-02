@@ -1,7 +1,9 @@
+use crate::state::Escrow;
 use anchor_lang::prelude::*;
 use anchor_spl::associated_token::AssociatedToken;
-use anchor_spl::token_interface::{Mint, TokenAccount, TokenInterface, TransferChecked, transfer_checked};
-use crate::state::Escrow;
+use anchor_spl::token_interface::{
+    transfer_checked, Mint, TokenAccount, TokenInterface, TransferChecked,
+};
 
 #[derive(Accounts)]
 #[instruction(seed: u64)]
@@ -27,19 +29,18 @@ pub struct Make<'info> {
     #[account(
         init,
         payer = maker,
-        token::mint = mint_a,
-        token::authority = escrow,
+        associated_token::mint = mint_a,
+        associated_token::authority = escrow,
     )]
-    pub vault: InterfaceAccount<'info,TokenAccount>,
-    pub associated_token: Program<'info, AssociatedToken>,
+    pub vault: InterfaceAccount<'info, TokenAccount>,
+    pub associated_token_program: Program<'info, AssociatedToken>,
     pub token_program: Interface<'info, TokenInterface>,
     pub system_program: Program<'info, System>,
-
 }
 
-impl <'info> Make <'info> {
+impl<'info> Make<'info> {
     pub fn init_escrow(&mut self, seed: u64, receive: u64, bumps: MakeBumps) -> Result<()> {
-        self.escrow.set_inner(Escrow{
+        self.escrow.set_inner(Escrow {
             seed,
             maker: self.maker.key(),
             mint_a: self.mint_a.key(),
@@ -59,7 +60,7 @@ impl <'info> Make <'info> {
             authority: self.maker.to_account_info(),
             mint: self.mint_a.to_account_info(),
         };
-        let cpi_ctx = CpiContext::new(cpi_program,cpi_accounts);
+        let cpi_ctx = CpiContext::new(cpi_program, cpi_accounts);
         transfer_checked(cpi_ctx, amount, self.mint_a.decimals)?;
         Ok(())
     }

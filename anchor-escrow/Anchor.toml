@@ -8,11 +8,14 @@ skip-lint = false
 [programs.localnet]
 anchor_escrow = "CmwenF4PBUNjL9Efxvm9sixvf2eZnSbFi4MfCn5RTK9a"
 
+[programs.devnet]
+anchor_escrow = "CmwenF4PBUNjL9Efxvm9sixvf2eZnSbFi4MfCn5RTK9a"
+
 [registry]
 url = "https://api.apr.dev"
 
 [provider]
-cluster = "Localnet"
+cluster = "localnet"
 wallet = "~/.config/solana/id.json"
 
 [scripts]
